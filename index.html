@@ -25,14 +25,16 @@
 
     <script src="event-generator.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
+        async function startEvents() {
             const testPanel = document.getElementById('test');
+            testPanel.classList.remove('done');
             const updatePanel = document.getElementById('update');
 
             const clickEventIterator = eg(testPanel, 'click');
             const mouseEventIterator = eg(testPanel, 'mousemove');
 
             const cancelButton = document.getElementById('cancel');
+            cancelButton.textContent = 'Cancel';
             cancelButton.addEventListener('click', e => {
                 clickEventIterator.stop();
                 mouseEventIterator.stop();
@@ -50,14 +52,19 @@
                 console.log('Clicked', e);
                 testPanel.textContent = `x: ${e.x}, y: ${e.y}, ${maxClicks} clicks left`;
 
-                if(maxClicks-- <= 0)
+                if (maxClicks-- <= 0)
                     break;
             }
 
             console.log('Done');
-            testPanel.textContent = 'Done';
+            testPanel.textContent = 'Stopped';
             testPanel.classList.add('done');
-        });
+
+            cancelButton.textContent = 'Restart';
+            cancelButton.addEventListener('click', startEvents , { once: true });
+        }
+
+        document.addEventListener('DOMContentLoaded', startEvents);
     </script>
 </head>
 
