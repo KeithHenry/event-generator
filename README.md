@@ -43,6 +43,20 @@ console.log('Done');
 testPanel.textContent = 'Done';
 ```
 
+You can run the loop without `await` using `.each()` :
+
+```javascript
+eg(testPanel, 'mousemove').
+    each(e => console.log(`x: ${e.offsetX}, y: ${e.offsetY}`)).
+    then(_ => console.log('stopped');
+```
+
+## TODO
+
+This overlaps/conflicts with [the _observable_ proposal](https://github.com/tc39/proposal-observable), which is fine as it's just a sandbox for playing with these ideas.
+
+If that gets implementent then this really isn't needed, but if it isn't then it could be worth resolving this to be closer to that proposal.
+
 ## Disclaimer
 
 `EventGenerator` is an experimental proof of concept. It is not intended for production.
