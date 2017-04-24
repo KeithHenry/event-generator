@@ -48,8 +48,7 @@ class EventGenerator {
             this.element.addEventListener(this.event, this.resolveCurrent, { once: true, passive: true });
         });
     }
-
-
+    
     /** Iterate the event asynchronously */
     [Symbol.asyncIterator]() {
 

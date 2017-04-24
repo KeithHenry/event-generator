@@ -43,6 +43,20 @@ console.log('Done');
 testPanel.textContent = 'Done';
 ```
 
+You can exit the loop with `break` and the event listener will be removed:
+
+```javascript
+for await (const e of eventIterator.map(e => ({ x: e.offsetX, y: e.offsetY }))) {
+    console.log('Clicked', e);
+    testPanel.textContent = `x: ${e.x}, y: ${e.y}, ${maxClicks} clicks left`;
+
+    if(maxClicks-- <= 0)
+        break; // Stop looping events
+}
+```
+
+`return`, `continue` on an outer loop, or `throw` will have the same effect.
+
 You can run the loop without `await` using `.each()` :
 
 ```javascript
