@@ -16,25 +16,60 @@ class EventGenerator {
     stop() {
         this.running = false;
 
-        // Fire once more to clear the current event
-        if(typeof this.element[this.event] === 'function')
-            this.element[this.event](null);
+        // If set resolve the current promise
+        if(this.resolveCurrent)
+            this.resolveCurrent(null);
+    }
+
+    nextEvent() {
+        // Each time this is called we await a promise resolving on the next event
+        return new Promise(r => {
+            this.resolveCurrent = e => { 
+                this.element.removeEventListener(this.event, this.resolveCurrent);
+                r(e);
+            };
+
+            this.element.addEventListener(this.event, this.resolveCurrent, { once: true, passive: true });
+        });
     }
 
     /** Iterate the event asynchronously */
     async *[Symbol.asyncIterator]() {
 
-        // Each time n() is called we await a promise resolving on the next event
-        const n = () => new Promise(r => this.element.addEventListener(this.event, r, { once: true, passive: true }));
-
         // Await the next event
-        let e = await n();
+        let e = await this.nextEvent();
         while (this.running) {
             yield e;
-            e = await n();
+            e = await this.nextEvent();
         }
 
+        this.resolveCurrent = null;
         return;
+    }
+
+    /** Execute an action each time an event is iterated.
+     * @param {function} action To fire for each element.
+     * @returns {Promise} Resolves once the event has been stopped. */
+    async each(action) {
+        for await (const e of this)
+            action(e);
+    }
+
+    /** Map the collection of events 
+     * @param {function} transform To translate each element.
+     * @returns Async iterator of mapped items. */
+    async *map(transform) {
+        for await (const e of this)
+            yield transform(e);
+    }
+
+    /** Filter the collection of events 
+     * @param {function} predicate Determine whether the item should be included.
+     * @returns Async iterator of filtered items. */
+    async *filter(predicate) {
+        for await (const e of this)
+            if(predicate(e))
+                yield e;
     }
 }
 

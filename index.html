@@ -10,6 +10,10 @@
             height: 300px;
             cursor: crosshair;
         }
+        #update {
+            width: 300px;
+            text-align: right;
+        }
     </style>
 
     <script src="event-generator.js"></script>
@@ -17,15 +21,26 @@
 
         document.addEventListener('DOMContentLoaded', async () => {
             const testPanel = document.getElementById('test');
+            const updatePanel = document.getElementById('update');
 
-            const eventIterator = eg(testPanel, 'click');
+            const clickEventIterator = eg(testPanel, 'click');
+            const mouseEventIterator = eg(testPanel, 'mousemove');
 
             const cancelButton = document.getElementById('cancel');
-            cancelButton.addEventListener('click', e => eventIterator.stop(), { once: true })
+            cancelButton.addEventListener('click', e => { 
+                clickEventIterator.stop() ;
+                mouseEventIterator.stop();
+            }, { once: true });
 
-            for await (const e of eventIterator) {
+            // Promise syntax with no await
+            mouseEventIterator.
+                each(e => updatePanel.textContent = `x: ${e.offsetX}, y: ${e.offsetY}`).
+                then(_ => updatePanel.textContent += ' stopped');
+
+            // For-await syntax with map()
+            for await (const e of clickEventIterator.map(e => ({x: e.offsetX, y: e.offsetY }))) {
                 console.log('Clicked', e);
-                testPanel.textContent = `x: ${e.offsetX}, y: ${e.offsetY}`;
+                testPanel.textContent = `x: ${e.x}, y: ${e.y}`;
             }
 
             console.log('Done');
@@ -39,9 +54,13 @@
 
     <p>Test page for playing around with event generators.</p>
 
+    <p>This page will only work in Chrome Canary with the <tt>--js-flags=--harmony-async-iteration</tt> command line switch.</p>
+
     <div id="test">
         Test Content
     </div>
+
+    <div id="update"></div>
 
     <button id="cancel">cancel</button>
 </body>
