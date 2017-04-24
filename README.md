@@ -73,7 +73,7 @@ Live demo at [https://keithhenry.github.io/event-generator/](https://keithhenry.
 
 This overlaps/conflicts with [the _observable_ proposal](https://github.com/tc39/proposal-observable), which is fine as it's just a sandbox for playing with these ideas.
 
-If that gets implementent then this really isn't needed, but if it isn't then it could be worth resolving this to be closer to that proposal.
+If that gets implemented then this really isn't needed, but if it isn't then it could be worth resolving this to be closer to that proposal.
 
 ## Disclaimer
 
