@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Event Generator Playground</title>
+    <style>
+        #test {
+            border: #e00 1px solid;
+            width: 300px;
+            height: 300px;
+            cursor: crosshair;
+        }
+    </style>
+
+    <script src="event-generator.js"></script>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const testPanel = document.getElementById('test');
+
+            const eventIterator = eg(testPanel, 'click');
+
+            const cancelButton = document.getElementById('cancel');
+            cancelButton.addEventListener('click', e => eventIterator.stop(), { once: true })
+
+            for await (const e of eventIterator) {
+                console.log('Clicked', e);
+                testPanel.textContent = `x: ${e.offsetX}, y: ${e.offsetY}`;
+            }
+
+            console.log('Done');
+            testPanel.textContent = 'Done';
+        });
+    </script>
+</head>
+
+<body>
+    <h1>Event Generator Playground</h1>
+
+    <p>Test page for playing around with event generators.</p>
+
+    <div id="test">
+        Test Content
+    </div>
+
+    <button id="cancel">cancel</button>
+</body>
+
+</html>
