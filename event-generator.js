@@ -1,4 +1,6 @@
-/** Wrap an event with a generator that yields each time the event fires */
+/** Wrap an event with a generator that yields each time the event fires 
+ * @author Keith Henry <keith.henry@evolutionjobs.co.uk>
+ * @license MIT */
 class EventGenerator {
 
     /** Create an async iteration of events
