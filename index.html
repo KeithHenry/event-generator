@@ -43,10 +43,15 @@
                 each(e => updatePanel.textContent = `x: ${e.offsetX}, y: ${e.offsetY}`).
                 then(_ => updatePanel.textContent += ' stopped');
 
+            let maxClicks = 5;
+
             // For-await syntax with map()
             for await (const e of clickEventIterator.map(e => ({ x: e.offsetX, y: e.offsetY }))) {
                 console.log('Clicked', e);
-                testPanel.textContent = `x: ${e.x}, y: ${e.y}`;
+                testPanel.textContent = `x: ${e.x}, y: ${e.y}, ${maxClicks} clicks left`;
+
+                if(maxClicks-- <= 0)
+                    break;
             }
 
             console.log('Done');
@@ -67,7 +72,7 @@
         Test Content
     </div>
 
-    <div id="update"></div>
+    <div id="update">Mouseover the content above</div>
 
     <button id="cancel">cancel</button>
 </body>

@@ -25,10 +25,21 @@ class EventGenerator {
      * @returns {Promise} Resolves when the next event fires, or when stop is called. */
     nextEvent() {
         // Each time this is called we await a promise resolving on the next event
-        return new Promise(r => {
+        return new Promise((r,x) => {
+            if(this.resolveCurrent)
+                x(new Error('Cannot iterate to the next promise while previous is still active.'));
+
+            // If not running then resolve any current event and return done
+            if(!this.running)
+                return r({ done: true });
+
+            // Hold on to the resolution event so we can stop it from outside the loop
             this.resolveCurrent = e => { 
+                // Always stop listening, though once: true will handle this normally
                 this.element.removeEventListener(this.event, this.resolveCurrent);
-                r(e);
+
+                // Resolve the promise
+                r({value: e, done: !this.running });
 
                 // This keeps a reference to the expired promise hanging around, so null it once done
                 this.resolveCurrent = null;
@@ -38,18 +49,19 @@ class EventGenerator {
         });
     }
 
+
     /** Iterate the event asynchronously */
-    async *[Symbol.asyncIterator]() {
+    [Symbol.asyncIterator]() {
 
-        // Await the next event
-        let e = await this.nextEvent();
-        while (this.running) {
-            yield e;
-            e = await this.nextEvent();
-        }
+        const iterator = {
+            return: () => { 
+                this.stop();
+                return { done: true };
+            },
+            next: () => this.nextEvent()
+        };
 
-        this.resolveCurrent = null;
-        return;
+        return iterator;
     }
 
     /** Execute an action each time an event is iterated.
