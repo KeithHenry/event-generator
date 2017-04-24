@@ -51,6 +51,10 @@ eg(testPanel, 'mousemove').
     then(_ => console.log('stopped');
 ```
 
+## Demo
+
+Live demo at [https://keithhenry.github.io/event-generator/](https://keithhenry.github.io/event-generator/), but it only works in Chrome Canary 60+ with  `--js-flags=--harmony-async-iteration` enabled
+
 ## TODO
 
 This overlaps/conflicts with [the _observable_ proposal](https://github.com/tc39/proposal-observable), which is fine as it's just a sandbox for playing with these ideas.
