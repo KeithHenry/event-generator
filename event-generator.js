@@ -13,17 +13,19 @@ class EventGenerator {
     }
 
     /** Stop listening for further events */
-    stop() {
+    return() {
         this.running = false;
 
         // If set resolve the current promise
         if(this.resolveCurrent)
             this.resolveCurrent(null);
+
+        return { done: true };
     }
 
     /** Return a promise that resolves when the next event fires, or when stop is called.
      * @returns {Promise} Resolves when the next event fires, or when stop is called. */
-    nextEvent() {
+    next() {
         // Each time this is called we await a promise resolving on the next event
         return new Promise((r,x) => {
             if(this.resolveCurrent)
@@ -51,17 +53,10 @@ class EventGenerator {
     
     /** Iterate the event asynchronously */
     [Symbol.asyncIterator]() {
-
-        const iterator = {
-            return: () => { 
-                this.stop();
-                return { done: true };
-            },
-            next: () => this.nextEvent()
-        };
-
-        return iterator;
+        return this;
     }
+
+    stop() { this.return(); }
 
     /** Execute an action each time an event is iterated.
      * @param {function} action To fire for each element.
