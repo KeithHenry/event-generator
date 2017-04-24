@@ -3,16 +3,19 @@
  * @license MIT */
 class EventGenerator {
 
-    /** Create an async iteration of events
-     * @param {Element} element The DOM element to subscribe to an event on
-     * @param {string} event The name of the event to subscribe to */
+    /** Create an async iteration of events.
+     * @param {Element} element The DOM element to subscribe to an event on.
+     * @param {string} event The name of the event to subscribe to. */
     constructor(element, event) {
         this.running = true;
         this.element = element;
         this.event = event;
     }
 
-    /** Stop listening for further events */
+    /** Stop listening for further events.
+     * Sets flag so that next() will return done as true, and resolves and unsubscribes the current event.
+     * This tidies up if the loop is exited early with break or return.
+     * @returns {any} Object with done: true, always. */
     return() {
         this.running = false;
 
@@ -24,6 +27,7 @@ class EventGenerator {
     }
 
     /** Return a promise that resolves when the next event fires, or when stop is called.
+     * Called each time for-await-of iterates as long as done is false.
      * @returns {Promise} Resolves when the next event fires, or when stop is called. */
     next() {
         // Each time this is called we await a promise resolving on the next event
@@ -52,10 +56,9 @@ class EventGenerator {
     }
     
     /** Iterate the event asynchronously */
-    [Symbol.asyncIterator]() {
-        return this;
-    }
+    [Symbol.asyncIterator]() { return this; }
 
+    /** Stop listening for further events */
     stop() { this.return(); }
 
     /** Execute an action each time an event is iterated.
