@@ -53,7 +53,7 @@ eg(testPanel, 'mousemove').
 
 ## Demo
 
-Live demo at [https://keithhenry.github.io/event-generator/](https://keithhenry.github.io/event-generator/), but it only works in Chrome Canary 60+ with  `--js-flags=--harmony-async-iteration` enabled
+Live demo at [https://keithhenry.github.io/event-generator/](https://keithhenry.github.io/event-generator/), but it only works in Chrome Canary 60+ with  `--js-flags=--harmony-async-iteration` enabled.
 
 ## TODO
 

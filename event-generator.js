@@ -21,12 +21,17 @@ class EventGenerator {
             this.resolveCurrent(null);
     }
 
+    /** Return a promise that resolves when the next event fires, or when stop is called.
+     * @returns {Promise} Resolves when the next event fires, or when stop is called. */
     nextEvent() {
         // Each time this is called we await a promise resolving on the next event
         return new Promise(r => {
             this.resolveCurrent = e => { 
                 this.element.removeEventListener(this.event, this.resolveCurrent);
                 r(e);
+
+                // This keeps a reference to the expired promise hanging around, so null it once done
+                this.resolveCurrent = null;
             };
 
             this.element.addEventListener(this.event, this.resolveCurrent, { once: true, passive: true });
