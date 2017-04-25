@@ -31,38 +31,42 @@
             testPanel.textContent = 'Click Here';
             const updatePanel = document.getElementById('update');
 
+            // Subscribe to the click event
             const clickEventIterator = eg(testPanel, 'click');
-            const mouseEventIterator = eg(testPanel, 'mousemove');
-
+            
+            // Cancel button stops events from outside the iterator loops
             const cancelButton = document.getElementById('cancel');
             cancelButton.textContent = 'Cancel';
-            cancelButton.addEventListener('click', e => {
-                clickEventIterator.stop();
-                mouseEventIterator.stop();
-            }, { once: true });
+            cancelButton.addEventListener('click', e => clickEventIterator.stop(), { once: true });
 
             // Promise syntax with no await
+            const mouseEventIterator = eg(testPanel, 'mousemove');
             mouseEventIterator.
                 each(e => updatePanel.textContent = `x: ${e.offsetX}, y: ${e.offsetY}`).
                 then(_ => updatePanel.textContent += ' stopped');
 
             let maxClicks = 5;
 
-            // For-await syntax with map()
-            for await (const e of clickEventIterator.map(e => ({ x: e.offsetX, y: e.offsetY }))) {
-                console.log('Clicked', e);
-                testPanel.textContent = `x: ${e.x}, y: ${e.y}, ${maxClicks} clicks left`;
+            try {
+                // For-await syntax with map()
+                for await (const e of clickEventIterator.map(e => ({ x: e.offsetX, y: e.offsetY }))) {
+                    console.log('Clicked', e);
+                    testPanel.textContent = `x: ${e.x}, y: ${e.y}, ${maxClicks} clicks left`;
 
-                if (maxClicks-- <= 0)
-                    break;
+                    if (maxClicks-- <= 0)
+                        return; // Stop events from inside the loop
+                }
             }
+            finally {
+                mouseEventIterator.stop();
 
-            console.log('Done');
-            testPanel.textContent = 'Stopped';
-            testPanel.classList.add('done');
+                console.log('Done');
+                testPanel.textContent = 'Stopped';
+                testPanel.classList.add('done');
 
-            cancelButton.textContent = 'Restart';
-            cancelButton.addEventListener('click', startEvents , { once: true });
+                cancelButton.textContent = 'Restart';
+                cancelButton.addEventListener('click', startEvents, { once: true });
+            }
         }
 
         document.addEventListener('DOMContentLoaded', startEvents);
