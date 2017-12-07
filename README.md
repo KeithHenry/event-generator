@@ -1,7 +1,5 @@
 # Event Generator
 
-Experiment using `--js-flags=--harmony-async-iteration` in Chrome Canary 60
-
 `EventGenerator` is reactive-style _observable_ pattern using the new `async generator` language function.
 
 ## Examples
@@ -67,14 +65,4 @@ eg(testPanel, 'mousemove').
 
 ## Demo
 
-Live demo at [https://keithhenry.github.io/event-generator/](https://keithhenry.github.io/event-generator/), but it only works in Chrome Canary 60+ with  `--js-flags=--harmony-async-iteration` enabled.
-
-## TODO
-
-This overlaps/conflicts with [the _observable_ proposal](https://github.com/tc39/proposal-observable), which is fine as it's just a sandbox for playing with these ideas.
-
-If that gets implemented then this really isn't needed, but if it isn't then it could be worth resolving this to be closer to that proposal.
-
-## Disclaimer
-
-`EventGenerator` is an experimental proof of concept. It is not intended for production.
+Live demo at [https://keithhenry.github.io/event-generator/](https://keithhenry.github.io/event-generator/), requires Chrome 63 or above.
